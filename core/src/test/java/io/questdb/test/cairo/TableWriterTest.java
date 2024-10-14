@@ -178,7 +178,7 @@ public class TableWriterTest extends AbstractCairoTest {
         try (TableWriter writer = newOffPoolWriter(configuration, PRODUCT, metrics)) {
             ts = populateProducts(writer, rnd, ts, count, interval);
             Assert.assertEquals(count, writer.size());
-            writer.addColumn("abc", ColumnType.STRING);
+            writer.addColumn("abc", ColumnType.STRING, false);
             // add more data including updating new column
             ts = populateTable2(writer, rnd, count, ts, interval);
             Assert.assertEquals(2 * count, writer.size());
@@ -288,7 +288,7 @@ public class TableWriterTest extends AbstractCairoTest {
         long ts = populateTable(FF, PartitionBy.MONTH);
         try (TableWriter writer = newOffPoolWriter(configuration, PRODUCT, metrics)) {
             try {
-                writer.addColumn("supplier", ColumnType.BOOLEAN);
+                writer.addColumn("supplier", ColumnType.BOOLEAN, false);
                 Assert.fail();
             } catch (CairoException ignore) {
             }
@@ -430,7 +430,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 return ff;
             }
         }, PRODUCT, metrics)) {
-            writer.addColumn("xyz", ColumnType.STRING);
+            writer.addColumn("xyz", ColumnType.STRING, false);
             long ts = TimestampFormatUtils.parseTimestamp("2013-03-04T00:00:00.000Z");
 
             Rnd rnd = new Rnd();
@@ -460,7 +460,7 @@ public class TableWriterTest extends AbstractCairoTest {
         int N = 100000;
         create(FF, PartitionBy.NONE, N);
         try (TableWriter writer = newOffPoolWriter(configuration, PRODUCT, metrics)) {
-            writer.addColumn("xyz", ColumnType.STRING);
+            writer.addColumn("xyz", ColumnType.STRING, false);
             long ts = TimestampFormatUtils.parseTimestamp("2013-03-04T00:00:00.000Z");
 
             Rnd rnd = new Rnd();
@@ -475,7 +475,7 @@ public class TableWriterTest extends AbstractCairoTest {
         int N = 10000;
         create(FF, PartitionBy.DAY, N);
         try (TableWriter writer = newOffPoolWriter(configuration, PRODUCT, metrics)) {
-            writer.addColumn("xyz", ColumnType.STRING);
+            writer.addColumn("xyz", ColumnType.STRING, false);
             long ts = TimestampFormatUtils.parseTimestamp("2013-03-04T00:00:00.000Z");
 
             Rnd rnd = new Rnd();
@@ -561,7 +561,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 }
             }, PRODUCT, metrics)) {
                 Assert.assertEquals(20, writer.getColumnCount());
-                writer.addColumn("abc", ColumnType.STRING);
+                writer.addColumn("abc", ColumnType.STRING, false);
                 Assert.assertEquals(22, writer.getColumnCount());
                 Assert.assertTrue(ff.deleteAttempted);
             }
@@ -669,7 +669,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 writer.commit();
 
                 try {
-                    writer.addColumn("c", ColumnType.STRING, 0, false, true, 1024, false);
+                    writer.addColumn("c", ColumnType.STRING, 0, false, true, 1024, false, false);
                     Assert.fail();
                 } catch (CairoException e) {
                     TestUtils.assertContains(e.getFlyweightMessage(), "only supported");
@@ -684,7 +684,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 writer.commit();
 
                 // re-add column  with index flag switched off
-                writer.addColumn("c", ColumnType.STRING, 0, false, false, 0, false);
+                writer.addColumn("c", ColumnType.STRING, 0, false, false, 0, false, false);
             }
         });
     }
@@ -710,7 +710,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 writer.commit();
 
                 try {
-                    writer.addColumn("c", ColumnType.SYMBOL, 0, false, true, 0, false);
+                    writer.addColumn("c", ColumnType.SYMBOL, 0, false, true, 0, false, false);
                     Assert.fail();
                 } catch (CairoException e) {
                     TestUtils.assertContains(e.getFlyweightMessage(), "Invalid index value block capacity");
@@ -725,7 +725,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 writer.commit();
 
                 // re-add column  with index flag switched off
-                writer.addColumn("c", ColumnType.STRING, 0, false, false, 0, false);
+                writer.addColumn("c", ColumnType.STRING, 0, false, false, 0, false, false);
             }
         });
     }
@@ -1070,7 +1070,7 @@ public class TableWriterTest extends AbstractCairoTest {
 
             Assert.assertEquals(N, writer.size());
 
-            writer.addColumn("abc", ColumnType.STRING);
+            writer.addColumn("abc", ColumnType.STRING, false);
 
             TableWriter.Row r = writer.newRow(ts);
             r.putInt(0, rnd.nextInt());
@@ -2098,7 +2098,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 r.cancel();
 
                 // Implicit commit
-                writer.addColumn("timetocycle", ColumnType.DOUBLE);
+                writer.addColumn("timetocycle", ColumnType.DOUBLE, false);
 
                 writer.newRow(tss[2]);
                 r.putDouble(0, 3.0);
@@ -3040,6 +3040,26 @@ public class TableWriterTest extends AbstractCairoTest {
     }
 
     @Test
+    public void testTableWriterAddExistingColumnIfNotExists() throws Exception {
+        int N = 10000;
+        long interval = 60000 * 1000L;
+        long ts = TimestampFormatUtils.parseTimestamp("2024-10-10T00:00:00.000Z");
+        create(FF, PartitionBy.DAY, 10000);
+        Rnd rnd = new Rnd();
+
+        try (TableWriter writer = newOffPoolWriter(configuration, PRODUCT, metrics)){
+            populateProducts(writer, rnd, ts, N, interval);
+            writer.addColumn("abc", ColumnType.STRING, false);
+            writer.commit();
+            writer.addColumn("abc", ColumnType.STRING, true);
+            writer.commit();
+            Assert.assertEquals("TableWriter{name=product}", writer.toString());
+        }
+
+    }
+
+
+    @Test
     public void testToString() throws Exception {
         TestUtils.assertMemoryLeak(() -> {
             create(FF, PartitionBy.NONE, 4);
@@ -3080,7 +3100,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 r.append();
             }
             writer.commit();
-            writer.addColumn("митинг", ColumnType.INT);
+            writer.addColumn("митинг", ColumnType.INT, false);
             Assert.assertEquals(0, writer.getColumnIndex("секьюрити"));
             Assert.assertEquals(2, writer.getColumnIndex("митинг"));
         }
@@ -3428,7 +3448,7 @@ public class TableWriterTest extends AbstractCairoTest {
 
             Assert.assertEquals(n, writer.size());
 
-            writer.addColumn("abc", ColumnType.STRING);
+            writer.addColumn("abc", ColumnType.STRING, false);
 
             // add more data including updating new column
             ts = populateTable2(writer, rnd, n, ts, interval);
@@ -3579,7 +3599,7 @@ public class TableWriterTest extends AbstractCairoTest {
             }
 
             try (TableWriter writer = newOffPoolWriter(configuration, PRODUCT, metrics)) {
-                writer.addColumn("xyz", ColumnType.STRING);
+                writer.addColumn("xyz", ColumnType.STRING, false);
             }
 
             try (TableWriter writer = newOffPoolWriter(configuration, PRODUCT, metrics)) {
@@ -3610,7 +3630,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 Assert.assertEquals(20, writer.getColumnCount());
 
                 try {
-                    writer.addColumn("abc", ColumnType.STRING);
+                    writer.addColumn("abc", ColumnType.STRING, false);
                     Assert.fail();
                 } catch (CairoError ignore) {
                 }
@@ -3641,7 +3661,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 ts = populateProducts(writer, rnd, ts, 10000, 60000L * 1000L);
                 writer.commit();
                 try {
-                    writer.addColumn("abc", ColumnType.SYMBOL);
+                    writer.addColumn("abc", ColumnType.SYMBOL, false);
                     Assert.fail();
                 } catch (CairoException ignore) {
                 }
@@ -3674,7 +3694,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 Assert.assertEquals(20, writer.getColumnCount());
                 ts = populateProducts(writer, rnd, ts, 10000, 60000L * 1000L);
                 writer.commit();
-                writer.addColumn("abc", ColumnType.SYMBOL);
+                writer.addColumn("abc", ColumnType.SYMBOL, false);
 
                 // ignore error and add more rows
                 ts = populateProducts(writer, rnd, ts, 10000, 60000L * 1000L);
@@ -4336,7 +4356,7 @@ public class TableWriterTest extends AbstractCairoTest {
                 Assert.assertEquals(20, writer.getColumnCount());
 
                 try {
-                    writer.addColumn("abc", ColumnType.STRING);
+                    writer.addColumn("abc", ColumnType.STRING, false);
                     Assert.fail();
                 } catch (CairoError ignore) {
                 }

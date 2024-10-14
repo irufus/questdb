@@ -954,7 +954,7 @@ public class WalTableFailureTest extends AbstractCairoTest {
 
             drainWalQueue();
             try (TableWriter writer = getWriter(tableName)) {
-                writer.addColumn("abcd", ColumnType.INT);
+                writer.addColumn("abcd", ColumnType.INT, false);
             }
 
             compile("alter table " + tableName.getTableName() + " add column dddd2 long");

@@ -81,7 +81,7 @@ public class SymbolCacheTest extends AbstractCairoTest {
                 try (TableWriter writer = getWriter(tableName)) {
                     start.await();
                     for (int i = 0; i < totalColAddCount; i++) {
-                        writer.addColumn("col" + i, ColumnType.SYMBOL);
+                        writer.addColumn("col" + i, ColumnType.SYMBOL, false);
                         int colCount = writer.getMetadata().getColumnCount();
                         columnsAdded.incrementAndGet();
 
@@ -772,11 +772,11 @@ public class SymbolCacheTest extends AbstractCairoTest {
         }
 
         @Override
-        public void addColumn(@NotNull CharSequence columnName, int columnType, SecurityContext securityContext) {
+        public void addColumn(@NotNull CharSequence columnName, int columnType, SecurityContext securityContext, boolean ifNotExists) {
         }
 
         @Override
-        public void addColumn(CharSequence columnName, int columnType, int symbolCapacity, boolean symbolCacheFlag, boolean isIndexed, int indexValueBlockCapacity, boolean isSequential) {
+        public void addColumn(CharSequence columnName, int columnType, int symbolCapacity, boolean symbolCacheFlag, boolean isIndexed, int indexValueBlockCapacity, boolean isSequential, boolean ifNotExists) {
         }
 
         @Override

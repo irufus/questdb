@@ -3326,7 +3326,7 @@ public class WalWriterTest extends AbstractCairoTest {
     }
 
     static void addColumn(WalWriter writer, String columnName, int columnType) {
-        writer.addColumn(columnName, columnType);
+        writer.addColumn(columnName, columnType, false);
     }
 
     static void assertBinSeqEquals(BinarySequence expected, BinarySequence actual) {

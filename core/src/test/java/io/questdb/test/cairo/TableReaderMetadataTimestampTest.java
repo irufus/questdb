@@ -58,7 +58,7 @@ public class TableReaderMetadataTimestampTest extends AbstractCairoTest {
 
         assertThatTimestampRemains((w) -> {
             w.removeColumn("str");
-            w.addColumn("str", ColumnType.STRING);
+            w.addColumn("str", ColumnType.STRING, false);
         }, expected, 12, 11, 13);
     }
 

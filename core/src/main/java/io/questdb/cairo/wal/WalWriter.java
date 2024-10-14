@@ -168,7 +168,7 @@ public class WalWriter implements TableWriterAPI {
     }
 
     @Override
-    public void addColumn(@NotNull CharSequence columnName, int columnType, SecurityContext securityContext) {
+    public void addColumn(@NotNull CharSequence columnName, int columnType, SecurityContext securityContext, boolean ifNotExists) {
         addColumn(
                 columnName,
                 columnType,
@@ -189,8 +189,8 @@ public class WalWriter implements TableWriterAPI {
             boolean symbolCacheFlag,
             boolean isIndexed,
             int indexValueBlockCapacity,
-            boolean isDedupKey
-    ) {
+            boolean isDedupKey,
+            boolean ifNotExists) {
         addColumn(
                 columnName,
                 columnType,

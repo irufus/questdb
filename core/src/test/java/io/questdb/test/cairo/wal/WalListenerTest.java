@@ -166,7 +166,7 @@ public class WalListenerTest extends AbstractCairoTest {
             );
 
             try (WalWriter walWriter2 = engine.getWalWriter(tableToken2.get())) {
-                walWriter2.addColumn("c", ColumnType.INT);
+                walWriter2.addColumn("c", ColumnType.INT, false);
 
                 Assert.assertEquals(
                         new WalListenerEvent(

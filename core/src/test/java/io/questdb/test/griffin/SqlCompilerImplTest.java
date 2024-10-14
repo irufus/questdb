@@ -2631,7 +2631,7 @@ public class SqlCompilerImplTest extends AbstractCairoTest {
                                         } else {
                                             writer.removeColumn("b" + (state - 1));
                                         }
-                                        writer.addColumn("b" + state, ColumnType.INT);
+                                        writer.addColumn("b" + state, ColumnType.INT, false);
                                     }
                                 }
                             }
@@ -3178,7 +3178,7 @@ public class SqlCompilerImplTest extends AbstractCairoTest {
                             // remove column from table X
                             try (TableWriter writer = getWriter("X")) {
                                 writer.removeColumn("a");
-                                writer.addColumn("c", ColumnType.FLOAT);
+                                writer.addColumn("c", ColumnType.FLOAT, false);
                             }
                         }
                     }
@@ -3207,7 +3207,7 @@ public class SqlCompilerImplTest extends AbstractCairoTest {
                                     // remove column from table X
                                     try (TableWriter writer = getWriter("X")) {
                                         writer.removeColumn("t");
-                                        writer.addColumn("t", ColumnType.FLOAT);
+                                        writer.addColumn("t", ColumnType.FLOAT, false);
                                     }
                                 }
                             }
@@ -4603,7 +4603,7 @@ public class SqlCompilerImplTest extends AbstractCairoTest {
                     // remove column from table X
                     try (TableWriter writer = TestUtils.getWriter(engine, "y")) {
                         writer.removeColumn("int1");
-                        writer.addColumn("c", ColumnType.INT);
+                        writer.addColumn("c", ColumnType.INT, false);
                     }
                 }
             }
@@ -5720,7 +5720,7 @@ public class SqlCompilerImplTest extends AbstractCairoTest {
                     Assert.assertEquals(2, writer.getMetadata().getTimestampIndex());
                     writer.removeColumn("t");
                     Assert.assertEquals(-1, writer.getMetadata().getTimestampIndex());
-                    writer.addColumn("t", ColumnType.TIMESTAMP);
+                    writer.addColumn("t", ColumnType.TIMESTAMP, false);
                     Assert.assertEquals(-1, writer.getMetadata().getTimestampIndex());
                 }
 

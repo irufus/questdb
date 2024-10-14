@@ -158,7 +158,7 @@ class LineTcpMeasurementEvent implements Closeable {
                         row = null;
                         final int colType = defaultColumnTypes.MAPPED_COLUMN_TYPES[entityType];
                         try {
-                            writer.addColumn(columnName, colType, principalOnlySecurityContext.of(principal));
+                            writer.addColumn(columnName, colType, principalOnlySecurityContext.of(principal), false);
                         } catch (CairoException e) {
                             colIndex = writer.getMetadata().getColumnIndexQuiet(columnName);
                             if (colIndex < 0) {

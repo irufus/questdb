@@ -1255,7 +1255,7 @@ public class TableReaderTest extends AbstractCairoTest {
                 try (TableWriter writer = getWriter(tableToken)) {
                     start.await();
                     for (int i = 0; i < totalColAddCount; i++) {
-                        writer.addColumn("col" + i, ColumnType.SYMBOL);
+                        writer.addColumn("col" + i, ColumnType.SYMBOL, false);
                         columnsAdded.incrementAndGet();
 
                         TableWriter.Row row = writer.newRow(i * Timestamps.HOUR_MICROS);
@@ -1324,7 +1324,7 @@ public class TableReaderTest extends AbstractCairoTest {
                 try (TableWriter writer = getWriter(tableToken)) {
                     start.await();
                     for (int i = 0; i < totalColAddCount; i++) {
-                        writer.addColumn("col" + i, ColumnType.SYMBOL);
+                        writer.addColumn("col" + i, ColumnType.SYMBOL, false);
                         columnsAdded.incrementAndGet();
 
                         if (rnd.nextBoolean()) {
@@ -1400,7 +1400,7 @@ public class TableReaderTest extends AbstractCairoTest {
                 try (TableWriter writer = getWriter(tableToken)) {
                     start.await();
                     for (int i = 0; i < totalColAddCount; i++) {
-                        writer.addColumn("col" + i, ColumnType.SYMBOL);
+                        writer.addColumn("col" + i, ColumnType.SYMBOL, false);
                         columnsAdded.incrementAndGet();
 
                         if (rnd.nextBoolean()) {
@@ -1546,7 +1546,7 @@ public class TableReaderTest extends AbstractCairoTest {
                     writer.removeColumn("b");
 
                     // now when we add new column by same name it must not pick up files we failed to delete previously
-                    writer.addColumn("b", ColumnType.SYMBOL);
+                    writer.addColumn("b", ColumnType.SYMBOL, false);
 
                     // SymbolMap must be cleared when we try to do add values to new column
                     appendTwoSymbols(writer, rnd, 2);
@@ -1610,7 +1610,7 @@ public class TableReaderTest extends AbstractCairoTest {
         AbstractCairoTest.create(model);
 
         try (TableWriter tw = getWriter("x")) {
-            tw.addColumn("c", ColumnType.SYMBOL);
+            tw.addColumn("c", ColumnType.SYMBOL, false);
         }
         engine.releaseInactive();
         testRemoveSymbol(counterRef, ff, "c", 6);
@@ -1640,7 +1640,7 @@ public class TableReaderTest extends AbstractCairoTest {
                 .col("b", ColumnType.SYMBOL);
         AbstractCairoTest.create(model);
         try (TableWriter tw = getWriter("x")) {
-            tw.addColumn("c", ColumnType.SYMBOL);
+            tw.addColumn("c", ColumnType.SYMBOL, false);
         }
         engine.releaseInactive();
 
@@ -1841,7 +1841,7 @@ public class TableReaderTest extends AbstractCairoTest {
                 try (TableWriter writer = getWriter(tableToken)) {
                     int symbolsToAdd = Os.isLinux() ? (int) (Files.PAGE_SIZE / Long.BYTES / 4) + 1 : 10;
                     for (int i = 0; i < symbolsToAdd; i++) {
-                        writer.addColumn("col" + i, ColumnType.SYMBOL);
+                        writer.addColumn("col" + i, ColumnType.SYMBOL, false);
                     }
 
                     for (int i = 0; i < partitionsToAdd; i++) {
@@ -1877,7 +1877,7 @@ public class TableReaderTest extends AbstractCairoTest {
 
                 try (TableReader reader = getReader(tableToken)) {
                     try (TableWriter writer = getWriter(tableToken)) {
-                        writer.addColumn("col10", ColumnType.SYMBOL);
+                        writer.addColumn("col10", ColumnType.SYMBOL, false);
                     }
                     engine.releaseAllWriters();
                     try {
@@ -1931,7 +1931,7 @@ public class TableReaderTest extends AbstractCairoTest {
 
                 try (TableReader reader = getReader(tableToken)) {
                     try (TableWriter writer = getWriter(tableToken)) {
-                        writer.addColumn("col10", ColumnType.SYMBOL);
+                        writer.addColumn("col10", ColumnType.SYMBOL, false);
                     }
                     engine.releaseAllWriters();
                     try {
@@ -1955,7 +1955,7 @@ public class TableReaderTest extends AbstractCairoTest {
         assertMemoryLeak(() -> {
             try (TableReader reader = getReader(tableToken)) {
                 try (TableWriter writer = getWriter(tableToken)) {
-                    writer.addColumn("col10", ColumnType.SYMBOL);
+                    writer.addColumn("col10", ColumnType.SYMBOL, false);
                 }
                 try (
                         Path path = getPath(tableName);
@@ -2464,7 +2464,7 @@ public class TableReaderTest extends AbstractCairoTest {
                 writer.newRow(TimestampFormatUtils.parseTimestamp("2016-03-02T10:00:00.000000Z")).cancel();
 
                 // before adding any data add column
-                writer.addColumn("xyz", ColumnType.SYMBOL);
+                writer.addColumn("xyz", ColumnType.SYMBOL, false);
 
                 Assert.assertTrue(reader.reload());
 
@@ -2621,9 +2621,9 @@ public class TableReaderTest extends AbstractCairoTest {
                 writer.rollback();
 
                 try (TableReader reader = newOffPoolReader(configuration, "tab")) {
-                    writer.addColumn("z", ColumnType.SYMBOL);
+                    writer.addColumn("z", ColumnType.SYMBOL, false);
                     Assert.assertTrue(reader.reload());
-                    writer.addColumn("w", ColumnType.INT);
+                    writer.addColumn("w", ColumnType.INT, false);
                     Assert.assertTrue(reader.reload());
                 }
             }
@@ -2986,7 +2986,7 @@ public class TableReaderTest extends AbstractCairoTest {
 
                     // It used to be: this must fail because we cannot delete foreign files
                     // but with column version file we can handle it.
-                    writer.addColumn("b", ColumnType.STRING);
+                    writer.addColumn("b", ColumnType.STRING, false);
 
                     // now assert what reader sees
                     Assert.assertTrue(reader.reload());
@@ -3087,7 +3087,7 @@ public class TableReaderTest extends AbstractCairoTest {
                     writer.removeColumn("b");
 
                     // now when we add new column by same name it must not pick up files we failed to delete previously
-                    writer.addColumn("b", ColumnType.STRING);
+                    writer.addColumn("b", ColumnType.STRING, false);
 
                     for (int i = 0; i < N; i++) {
                         TableWriter.Row row = writer.newRow();
@@ -3169,7 +3169,7 @@ public class TableReaderTest extends AbstractCairoTest {
 
                     // It used to be: this must fail because we cannot delete foreign files
                     // but with column version file we can handle it.
-                    writer.addColumn("b", ColumnType.STRING);
+                    writer.addColumn("b", ColumnType.STRING, false);
 
                     // now assert what reader sees
                     Assert.assertTrue(reader.reload()); // This fails with could not open read-only .. /bb.i.
@@ -3234,7 +3234,7 @@ public class TableReaderTest extends AbstractCairoTest {
                     writer.removeColumn("b");
 
                     // now when we add new column by same name it must not pick up files we failed to delete previously
-                    writer.addColumn("b", ColumnType.SYMBOL);
+                    writer.addColumn("b", ColumnType.SYMBOL, false);
 
                     // SymbolMap must be cleared when we try to do add values to new column
                     appendTwoSymbols(writer, rnd, 2);
@@ -3309,7 +3309,7 @@ public class TableReaderTest extends AbstractCairoTest {
                     reader.reload();
 
                     // now when we add new column by same name it must not pick up files we failed to delete previously
-                    writer.addColumn("b", ColumnType.SYMBOL);
+                    writer.addColumn("b", ColumnType.SYMBOL, false);
 
                     // SymbolMap must be cleared when we try to do add values to new column
                     appendTwoSymbols(writer, rnd, 2);
@@ -3382,7 +3382,7 @@ public class TableReaderTest extends AbstractCairoTest {
                     writer.removeColumn("b");
 
                     // now when we add new column by same name it must not pick up files we failed to delete previously
-                    writer.addColumn("b", ColumnType.SYMBOL);
+                    writer.addColumn("b", ColumnType.SYMBOL, false);
 
                     // SymbolMap must be cleared when we try to do add values to new column
                     appendTwoSymbols(writer, rnd, 2);
@@ -3789,7 +3789,7 @@ public class TableReaderTest extends AbstractCairoTest {
                     writer.renameColumn(columnName, "d");
 
                     // now when we add new column by same name it must not pick up files we failed to delete previously
-                    writer.addColumn(columnName, ColumnType.SYMBOL);
+                    writer.addColumn(columnName, ColumnType.SYMBOL, false);
 
                     // SymbolMap must be cleared when we try to do add values to new column
                     appendTwoSymbols(writer, rnd, 2);
@@ -4007,7 +4007,7 @@ public class TableReaderTest extends AbstractCairoTest {
 
                         // this is where things get interesting
                         // add single column
-                        writer.addColumn("str2", ColumnType.STRING);
+                        writer.addColumn("str2", ColumnType.STRING, false);
 
                         // populate table with fourth batch, this time we also populate new column
                         // we expect that values of new column will be NULL for first three batches and non-NULL for fourth
@@ -4026,7 +4026,7 @@ public class TableReaderTest extends AbstractCairoTest {
                         // lets now add another column and populate fifth batch, including new column
                         // reading this table will ensure tops are preserved
 
-                        writer.addColumn("int2", ColumnType.INT);
+                        writer.addColumn("int2", ColumnType.INT, false);
 
                         nextTs = testAppend(writer, rnd, nextTs, count, increment, blob, 0, BATCH3_GENERATOR);
 
@@ -4038,15 +4038,15 @@ public class TableReaderTest extends AbstractCairoTest {
                         // now append more columns that would overflow column buffer and force table to use different
                         // algo when retaining resources
 
-                        writer.addColumn("short2", ColumnType.SHORT);
-                        writer.addColumn("bool2", ColumnType.BOOLEAN);
-                        writer.addColumn("byte2", ColumnType.BYTE);
-                        writer.addColumn("float2", ColumnType.FLOAT);
-                        writer.addColumn("double2", ColumnType.DOUBLE);
-                        writer.addColumn("sym2", ColumnType.SYMBOL);
-                        writer.addColumn("long2", ColumnType.LONG);
-                        writer.addColumn("date2", ColumnType.DATE);
-                        writer.addColumn("bin2", ColumnType.BINARY);
+                        writer.addColumn("short2", ColumnType.SHORT, false);
+                        writer.addColumn("bool2", ColumnType.BOOLEAN, false);
+                        writer.addColumn("byte2", ColumnType.BYTE, false);
+                        writer.addColumn("float2", ColumnType.FLOAT, false);
+                        writer.addColumn("double2", ColumnType.DOUBLE, false);
+                        writer.addColumn("sym2", ColumnType.SYMBOL, false);
+                        writer.addColumn("long2", ColumnType.LONG, false);
+                        writer.addColumn("date2", ColumnType.DATE, false);
+                        writer.addColumn("bin2", ColumnType.BINARY, false);
 
                         // populate new columns and start asserting batches, which would assert that new columns are
                         // retrospectively "null" in existing records
@@ -4078,7 +4078,7 @@ public class TableReaderTest extends AbstractCairoTest {
 
                         // remove first column and add new column by same name
                         writer.removeColumn("int");
-                        writer.addColumn("int", ColumnType.INT);
+                        writer.addColumn("int", ColumnType.INT, false);
 
                         Assert.assertTrue(reader.reload());
                         assertOpenPartitionCount(reader);
@@ -4095,7 +4095,7 @@ public class TableReaderTest extends AbstractCairoTest {
                         assertBatch8(count, increment, ts, blob, cursor);
 
                         writer.removeColumn("sym");
-                        writer.addColumn("sym", ColumnType.SYMBOL);
+                        writer.addColumn("sym", ColumnType.SYMBOL, false);
                         Assert.assertTrue(reader.reload());
                         assertOpenPartitionCount(reader);
 

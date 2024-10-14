@@ -428,7 +428,7 @@ public class TableWriter implements TableWriterAPI, MetadataService, Closeable {
     }
 
     @Override
-    public void addColumn(@NotNull CharSequence columnName, int columnType, SecurityContext securityContext) {
+    public void addColumn(@NotNull CharSequence columnName, int columnType, SecurityContext securityContext, boolean ifNotExists) {
         addColumn(
                 columnName,
                 columnType,
@@ -438,8 +438,8 @@ public class TableWriter implements TableWriterAPI, MetadataService, Closeable {
                 0,
                 false,
                 false,
-                securityContext
-        );
+                securityContext,
+                ifNotExists);
     }
 
     @Override
@@ -450,8 +450,8 @@ public class TableWriter implements TableWriterAPI, MetadataService, Closeable {
             boolean symbolCacheFlag,
             boolean isIndexed,
             int indexValueBlockCapacity,
-            boolean isDedupKey
-    ) {
+            boolean isDedupKey,
+            boolean ifNotExists) {
         addColumn(
                 columnName,
                 columnType,
@@ -461,8 +461,8 @@ public class TableWriter implements TableWriterAPI, MetadataService, Closeable {
                 indexValueBlockCapacity,
                 false,
                 isDedupKey,
-                null
-        );
+                null,
+                false);
     }
 
     @Override
@@ -485,8 +485,8 @@ public class TableWriter implements TableWriterAPI, MetadataService, Closeable {
                 indexValueBlockCapacity,
                 false,
                 isDedupKey,
-                securityContext
-        );
+                securityContext,
+                false);
     }
 
     /**
@@ -510,14 +510,15 @@ public class TableWriter implements TableWriterAPI, MetadataService, Closeable {
      * still have committed transaction.
      *
      * @param columnName              of column either ASCII or UTF8 encoded.
+     * @param columnType              {@link ColumnType}
      * @param symbolCapacity          when column columnType is SYMBOL this parameter specifies approximate capacity for symbol map.
      *                                It should be equal to number of unique symbol values stored in the table and getting this
      *                                value badly wrong will cause performance degradation. Must be power of 2
      * @param symbolCacheFlag         when set to true, symbol values will be cached on Java heap.
-     * @param columnType              {@link ColumnType}
      * @param isIndexed               configures column to be indexed or not
      * @param indexValueBlockCapacity approximation of number of rows for single index key, must be power of 2
      * @param isSequential            for columns that contain sequential values query optimiser can make assumptions on range searches (future feature)
+     * @param ifNotExists
      */
     public void addColumn(
             CharSequence columnName,
@@ -528,8 +529,8 @@ public class TableWriter implements TableWriterAPI, MetadataService, Closeable {
             int indexValueBlockCapacity,
             boolean isSequential,
             boolean isDedupKey,
-            SecurityContext securityContext
-    ) {
+            SecurityContext securityContext,
+            boolean ifNotExists) {
         assert txWriter.getLagRowCount() == 0;
         assert indexValueBlockCapacity == Numbers.ceilPow2(indexValueBlockCapacity) : "power of 2 expected";
         assert symbolCapacity == Numbers.ceilPow2(symbolCapacity) : "power of 2 expected";
@@ -538,7 +539,11 @@ public class TableWriter implements TableWriterAPI, MetadataService, Closeable {
         checkColumnName(columnName);
 
         if (getColumnIndexQuiet(metaMem, columnName, columnCount) != -1) {
-            throw CairoException.duplicateColumn(columnName);
+            if(ifNotExists){
+                return;
+            } else {
+                throw CairoException.duplicateColumn(columnName);
+            }
         }
 
         commit();

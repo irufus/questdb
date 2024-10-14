@@ -606,7 +606,7 @@ public class UpdateTest extends AbstractCairoTest {
         Assume.assumeFalse(walEnabled);
 
         testUpdateAsyncMode(
-                tableWriter -> tableWriter.addColumn("newCol", ColumnType.INT),
+                tableWriter -> tableWriter.addColumn("newCol", ColumnType.INT, false),
                 "cached query plan cannot be used because table schema has changed [table='up']",
                 "ts\tx\tnewCol\n" +
                         "1970-01-01T00:00:00.000000Z\t1\tnull\n" +

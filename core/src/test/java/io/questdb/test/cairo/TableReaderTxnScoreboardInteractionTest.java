@@ -86,7 +86,7 @@ public class TableReaderTxnScoreboardInteractionTest extends AbstractCairoTest {
                 Assert.assertEquals(0, txnScoreboard.getActiveReaderCount(2));
                 Assert.assertEquals(0, txnScoreboard.getActiveReaderCount(3));
 
-                w.addColumn("z", ColumnType.LONG);
+                w.addColumn("z", ColumnType.LONG, false);
 
                 try (TableReader reader = getReader(tt)) {
                     Assert.assertEquals(4, reader.getTxn());

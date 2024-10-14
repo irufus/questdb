@@ -594,7 +594,7 @@ public class LineUdpParserImplTest extends AbstractCairoTest {
         AbstractCairoTest.create(model);
         try (TableWriter writer = getWriter("t_ilp21")) {
             writer.removeColumn("event");
-            writer.addColumn("event", ColumnType.SHORT);
+            writer.addColumn("event", ColumnType.SHORT, false);
         }
         engine.releaseInactive();
 

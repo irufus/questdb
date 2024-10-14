@@ -90,7 +90,7 @@ public class TableReaderReloadFuzzTest extends AbstractCairoTest {
                 engine.print(tableName, sink, sqlExecutionContext);
 
                 for (int i = 0; i < 64; i++) {
-                    writer.addColumn("col" + i, ColumnType.INT);
+                    writer.addColumn("col" + i, ColumnType.INT, false);
                     row = writer.newRow(i * ONE_DAY);
                     row.append();
                 }
@@ -135,7 +135,7 @@ public class TableReaderReloadFuzzTest extends AbstractCairoTest {
             switch (structureChangeType) {
                 case ADD:
                     final int columnType = random.nextInt(12) + 1;
-                    writer.addColumn("col" + columNameGen.incrementAndGet(), columnType);
+                    writer.addColumn("col" + columNameGen.incrementAndGet(), columnType, false);
                     break;
                 case REMOVE:
                     final int removeIndex = selectColumn(writerMetadata);

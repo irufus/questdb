@@ -742,8 +742,8 @@ public class BitmapIndexTest extends AbstractCairoTest {
                         true,
                         true,
                         indexBlockCapacity,
-                        false
-                );
+                        false,
+                        false);
                 for (int i = 0; i < M; i++) {
                     TableWriter.Row row = writer.newRow(timestamp += timestampIncrement);
                     row.putStr(0, rnd.nextChars(20));

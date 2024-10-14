@@ -69,7 +69,7 @@ public class TableReaderMetadataTest extends AbstractCairoTest {
                 "date:DATE\n" +
                 "varchar:" + varcharColumnType + "\n" +
                 "xyz:" + stringColumnType + "\n";
-        assertThat(expected, (w) -> w.addColumn("xyz", ColumnType.STRING));
+        assertThat(expected, (w) -> w.addColumn("xyz", ColumnType.STRING, false));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class TableReaderMetadataTest extends AbstractCairoTest {
             try (TableWriter writer = getWriter(tableToken)) {
                 start.await();
                 for (int i = 0; i < totalColAddCount; i++) {
-                    writer.addColumn("col" + i, ColumnType.INT);
+                    writer.addColumn("col" + i, ColumnType.INT, false);
                     columnsAdded.incrementAndGet();
                 }
             } catch (Throwable e) {
@@ -141,10 +141,10 @@ public class TableReaderMetadataTest extends AbstractCairoTest {
                 "int:INT\n";
 
         assertThat(expected,
-                w -> w.addColumn("bin2", ColumnType.BINARY),
+                w -> w.addColumn("bin2", ColumnType.BINARY, false),
                 w -> w.removeColumn("bin2"),
                 w -> w.removeColumn("int"),
-                w -> w.addColumn("int", ColumnType.INT)
+                w -> w.addColumn("int", ColumnType.INT, false)
         );
     }
 
@@ -236,7 +236,7 @@ public class TableReaderMetadataTest extends AbstractCairoTest {
         assertThat(expected, (w) -> {
             w.removeColumn("double");
             w.removeColumn("str");
-            w.addColumn("xyz", ColumnType.STRING);
+            w.addColumn("xyz", ColumnType.STRING, false);
         });
     }
 
@@ -280,7 +280,7 @@ public class TableReaderMetadataTest extends AbstractCairoTest {
                 "str:" + stringColumnType + "\n";
         assertThat(expected,
                 w -> w.removeColumn("str"),
-                w -> w.addColumn("str", ColumnType.STRING)
+                w -> w.addColumn("str", ColumnType.STRING, false)
         );
     }
 
@@ -302,9 +302,9 @@ public class TableReaderMetadataTest extends AbstractCairoTest {
                 w -> w.removeColumn("short"),
                 w -> w.removeColumn("str"),
                 w -> w.removeColumn("int"),
-                w -> w.addColumn("str", ColumnType.STRING),
+                w -> w.addColumn("str", ColumnType.STRING, false),
                 // change column type
-                w -> w.addColumn("short", ColumnType.INT)
+                w -> w.addColumn("short", ColumnType.INT, false)
         );
     }
 

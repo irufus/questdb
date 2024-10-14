@@ -1654,7 +1654,7 @@ public class O3FailureTest extends AbstractO3Test {
 
             // Adding column is essential, columns open in writer's constructor will have
             // mapped memory, whereas newly added column does not
-            w.addColumn("v", ColumnType.DOUBLE);
+            w.addColumn("v", ColumnType.DOUBLE, false);
 
             // stash copy of X, in case X is corrupt
             compiler.compile("create atomic table y as (select * from x)", executionContext);

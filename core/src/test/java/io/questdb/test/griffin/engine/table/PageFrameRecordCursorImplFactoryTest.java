@@ -214,9 +214,9 @@ public class PageFrameRecordCursorImplFactoryTest extends AbstractCairoTest {
                 int sIndex = -1;
                 for (int i = 0; i < rowCount; i++) {
                     if (i == startTopAt) {
-                        writer.addColumn("j", ColumnType.LONG);
+                        writer.addColumn("j", ColumnType.LONG, false);
                         jIndex = writer.getColumnIndex("j");
-                        writer.addColumn("s", ColumnType.STRING);
+                        writer.addColumn("s", ColumnType.STRING, false);
                         sIndex = writer.getColumnIndex("s");
                     }
 
@@ -325,9 +325,9 @@ public class PageFrameRecordCursorImplFactoryTest extends AbstractCairoTest {
                 int sIndex = -1;
                 for (int i = 0; i < rowCount; i++) {
                     if (i == startTopAt) {
-                        writer.addColumn("j", ColumnType.LONG);
+                        writer.addColumn("j", ColumnType.LONG, false);
                         jIndex = writer.getColumnIndex("j");
-                        writer.addColumn("s", ColumnType.STRING);
+                        writer.addColumn("s", ColumnType.STRING, false);
                         sIndex = writer.getColumnIndex("s");
                     }
 

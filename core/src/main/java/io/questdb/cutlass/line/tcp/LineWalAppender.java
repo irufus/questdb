@@ -148,7 +148,7 @@ public class LineWalAppender {
                             securityContext.authorizeAlterTableAddColumn(writer.getTableToken());
                             try {
                                 int newColumnType = ld.getColumnType(ld.getColNameUtf8(), ent.getType());
-                                writer.addColumn(columnNameUtf16, newColumnType, securityContext);
+                                writer.addColumn(columnNameUtf16, newColumnType, securityContext, false);
                                 columnWriterIndex = metadata.getWriterIndex(metadata.getColumnIndexQuiet(columnNameUtf16));
                                 // Add the column to metadata cache too
                                 ld.addColumn(columnNameUtf16, columnWriterIndex, newColumnType);

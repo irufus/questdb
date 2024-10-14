@@ -130,7 +130,7 @@ public class O3Test extends AbstractO3Test {
 
                             CharSequence newCol = "price" + i;
                             short colType = columnTypes[i % columnTypes.length];
-                            writer.addColumn(newCol, colType);
+                            writer.addColumn(newCol, colType, false);
                             newCols.add(newCol);
                             newColTypes.add(colType);
 
@@ -1841,7 +1841,7 @@ public class O3Test extends AbstractO3Test {
 
             TableWriter.Row row;
             // lets add column
-            w.addColumn("v", ColumnType.DOUBLE);
+            w.addColumn("v", ColumnType.DOUBLE, false);
 
             // this row goes into a non-recent partition
             // triggering O3

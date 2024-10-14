@@ -49,7 +49,7 @@ public class TableWriterInteractionTest extends AbstractCairoTest {
                 // this used to caused dense indexer list to be freed
                 r.cancel();
 
-                w.addColumn("y", ColumnType.STRING);
+                w.addColumn("y", ColumnType.STRING, false);
 
                 r = w.newRow(ts);
                 r.putSym(1, "ELLO");

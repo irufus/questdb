@@ -741,7 +741,7 @@ public class DispatcherWriterQueueTest extends AbstractCairoTest {
                             // adding a new column before calling writer.tick() will result in ReaderOutOfDateException
                             // thrown from UpdateOperator as this changes table structure
                             // recompile should be successful so the UPDATE completes
-                            writer.addColumn("newCol", ColumnType.INT);
+                            writer.addColumn("newCol", ColumnType.INT, false);
                             first = false;
                         }
                     }

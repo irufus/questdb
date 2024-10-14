@@ -447,7 +447,7 @@ public class LineUdpParserImpl implements LineUdpParser, Closeable {
         } else {
             CharSequence colNameAsChars = cache.get(columnName);
             if (autoCreateNewColumns && TableUtils.isValidColumnName(colNameAsChars, udpConfiguration.getMaxFileNameLength())) {
-                writer.addColumn(colNameAsChars, valueType);
+                writer.addColumn(colNameAsChars, valueType, false);
                 // Writer index can be different from column count, it keeps deleted columns in metadata
                 int columnIndex = writer.getColumnIndex(colNameAsChars);
                 columnIndexAndType.add(Numbers.encodeLowHighInts(columnIndex, valueType));
